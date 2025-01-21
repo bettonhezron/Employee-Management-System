@@ -1,14 +1,13 @@
 package com.hezron.employee_management_system.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "role")
+@Table(name = "roles")
 public class Role {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY )
     private  Long id;
 
     private String name;
@@ -28,4 +27,6 @@ public class Role {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Role() {}
 }
