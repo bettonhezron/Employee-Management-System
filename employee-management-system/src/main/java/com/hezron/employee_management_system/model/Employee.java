@@ -7,11 +7,11 @@ import jakarta.persistence.*;
 public class Employee {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
     @Column(name = "first_name")
-    private String fistName;
+    private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
@@ -27,12 +27,12 @@ public class Employee {
         this.id = id;
     }
 
-    public String getFistName() {
-        return fistName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFistName(String fistName) {
-        this.fistName = fistName;
+    public void setFirstName(String fistName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {

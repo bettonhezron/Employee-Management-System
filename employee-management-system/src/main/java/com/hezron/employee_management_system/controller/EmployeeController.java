@@ -27,14 +27,14 @@ public class EmployeeController {
     public String showNewEmployeeForm(Model model){
         Employee employee = new Employee();
         model.addAttribute("employee", employee);
-        return "nw_employee";
+        return "new_employee";
     }
 
 
     @PostMapping("/saveEmployee")
     public String saveEmployee(@ModelAttribute("employee") Employee employee){
         employeeService.saveEmployee(employee);
-        return "redirect/:";
+        return "redirect:/";
     }
 
     @GetMapping("showFormForUpdate/{id}")
