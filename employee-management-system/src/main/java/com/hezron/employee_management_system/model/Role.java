@@ -3,7 +3,7 @@ package com.hezron.employee_management_system.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "role")
 public class Role {
 
     @Id
