@@ -10,9 +10,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+
     @Autowired
     private EmployeeRepository employeeRepository;
 
@@ -23,7 +24,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void saveEmployee(Employee employee) {
-        employeeRepository.save(employee);
+        this.employeeRepository.save(employee);
     }
 
     @Override
@@ -44,6 +45,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 : Sort.by(sortField).descending();
 
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
-        return employeeRepository.findAll(pageable);
+        return this.employeeRepository.findAll(pageable);
     }
 }

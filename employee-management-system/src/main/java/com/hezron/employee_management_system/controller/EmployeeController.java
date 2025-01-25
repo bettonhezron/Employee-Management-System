@@ -30,10 +30,26 @@ public class EmployeeController {
 
     @PostMapping("/saveEmployee")
     public String saveEmployee(@ModelAttribute("employee") Employee employee,
-                               RedirectAttributes redirectAttributes) {
-        employeeService.saveEmployee(employee);
-        redirectAttributes.addFlashAttribute("successMessage", "Employee created successfully!");
-        return "redirect:/";
+                               RedirectAttributes redirectAttributes,
+                               Model model) {
+        try {
+            // Add some basic validation
+            if (employee.getFirstName() == null || employee.getFirstName().isEmpty()) {
+                model.addAttribute("errorMessage", "First name cannot be empty");
+                return "new_employee";
+            }
+
+            employeeService.saveEmployee(employee);
+            redirectAttributes.addFlashAttribute("successMessage", "Employee created successfully!");
+            return "redirect:/";
+        } catch (Exception e) {
+            // Log the full stack trace
+            e.printStackTrace();
+
+            // Add error message to model
+            model.addAttribute("errorMessage", "Error saving employee: " + e.getMessage());
+            return "new_employee";
+        }
     }
 
     @GetMapping("/page/{pageNo}")
