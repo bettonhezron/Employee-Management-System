@@ -18,7 +18,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
 
     @Override
+    public long countTotalEmployees() {
+        // Returns the total count of employees in the database
+        return employeeRepository.count();
+    }
+
+    @Override
+    public List<Employee> getRecentHires(int limit) {
+       // Fetches the top 5 recent hires by hire date
+        return employeeRepository.findTop5ByOrderByHireDateDesc();
+    }
+
+    @Override
     public List<Employee> getAllEmployees() {
+        // Fetches all employees
         return employeeRepository.findAll();
     }
 

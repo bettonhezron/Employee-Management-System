@@ -11,6 +11,12 @@ import java.util.List;
 
 @Service
 public interface EmployeeService {
+
+    long countTotalEmployees();
+
+    // Get recent hires (limit by number of employees)
+    List<Employee> getRecentHires(int limit);
+
     List<Employee> getAllEmployees();
     void saveEmployee(Employee employee);
     Employee getEmployeeById(Long id);
@@ -18,7 +24,5 @@ public interface EmployeeService {
     Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection);
 
     void updateEmployee(Employee employee);
-
-
 
 }

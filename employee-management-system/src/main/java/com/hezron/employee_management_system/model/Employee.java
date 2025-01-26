@@ -2,6 +2,8 @@ package com.hezron.employee_management_system.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "employee")
 public class Employee {
@@ -18,6 +20,30 @@ public class Employee {
 
     @Column(name = "email")
     private String email;
+
+
+    @Column(name = "department")
+    private String department;
+
+    @Column(name = "hire_date")
+    private LocalDate hireDate;
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public LocalDate getHireDate() {
+        return hireDate;
+    }
+
+    public void setHireDate(LocalDate hireDate) {
+        this.hireDate = hireDate;
+    }
+
     public Long getId() {
         return id;
     }
