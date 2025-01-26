@@ -33,6 +33,14 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
     }
 
+    public void updateEmployee(Employee employee) {
+        Employee existingEmployee = getEmployeeById(employee.getId());
+        existingEmployee.setFirstName(employee.getFirstName());
+        existingEmployee.setLastName(employee.getLastName());
+        existingEmployee.setEmail(employee.getEmail());
+        employeeRepository.save(existingEmployee);
+    }
+
     @Override
     public void deleteEmployeeById(Long id) {
         employeeRepository.deleteById(id);
@@ -47,4 +55,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
         return this.employeeRepository.findAll(pageable);
     }
+
+
 }

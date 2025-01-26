@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Management Dashboard</title>
+
+    <!-- Bootstrap 5 CDN -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- Font Awesome (For Icons) -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .dashboard-card {
+            transition: transform 0.3s ease;
+        }
+        .dashboard-card:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">Employee Management</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}"></a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/employees}">Employees</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/department}">Department</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/reports}">Reports</a></li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/logout}">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Dashboard Container -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Employee Management Dashboard</h2>
+
+    <div class="row">
+        <!-- Total Employees Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Total Employees</h5>
+                    <p class="card-text display-6" th:text="${totalEmployees}">0</p>
+                    <a href="/employees" class="btn btn-outline-primary">View All Employees</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Hires Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-body">
+                    <i class="fas fa-user-plus fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Recent Hires</h5>
+                    <ul class="list-group">
+                        <li th:each="employee : ${recentHires}" class="list-group-item d-flex justify-content-between align-items-center">
+                            [[${employee.firstName}]] [[${employee.lastName}]]
+                            <span class="badge bg-primary rounded-pill" th:text="${employee.hireDate}">Date</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-tasks fa-3x text-warning mb-3"></i>
+                    <h5 class="card-title">Quick Actions</h5>
+                    <div class="d-grid gap-2">
+                        <a href="/showNewEmployeeForm" class="btn btn-outline-success">
+                            <i class="fas fa-user-plus me-2"></i>Add New Employee
+                        </a>
+                        <a href="/reports" class="btn btn-outline-info">
+                            <i class="fas fa-chart-bar me-2"></i>Generate Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

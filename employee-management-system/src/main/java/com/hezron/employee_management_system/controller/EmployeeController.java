@@ -52,11 +52,29 @@ public class EmployeeController {
         }
     }
 
+    @GetMapping("/showFormForUpdate/{id}")
+    public String showUpdateForm(@PathVariable Long id, Model model) {
+        Employee employee = employeeService.getEmployeeById(id);
+        model.addAttribute("employee", employee);
+        return "update_employee";
+    }
+
+    @PostMapping("/updateEmployee")
+    public String updateEmployee(@ModelAttribute("employee") Employee employee,
+                                 RedirectAttributes redirectAttributes) {
+        employeeService.updateEmployee(employee);
+        redirectAttributes.addFlashAttribute("message", "Employee updated successfully!");
+        return "redirect:/";
+    }
+
+
     @GetMapping("/page/{pageNo}")
-    public String findPaginated(@PathVariable(value = "pageNo") int pageNo,
-                                @RequestParam("sortField") String sortField,
-                                @RequestParam("sortDir") String sortDir,
-                                Model model) {
+    public String findPaginated(
+            @PathVariable(value = "pageNo") int pageNo,
+            @RequestParam(value = "sortField", defaultValue = "firstName") String sortField,
+            @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
+            Model model
+    ) {
         int pageSize = 5;
         Page<Employee> page = employeeService.findPaginated(pageNo, pageSize, sortField, sortDir);
         List<Employee> listEmployees = page.getContent();

@@ -9,7 +9,7 @@ public class UserRegistrationDto {
     public UserRegistrationDto(){
 
     }
-
+    //Constructors
     public UserRegistrationDto(String firstName, String lastName, String email, String password){
         super();
         this.firstName = firstName;
@@ -18,6 +18,7 @@ public class UserRegistrationDto {
         this.password = password;
     }
 
+    // Getters and Setters
     public String getFirstName() {
         return firstName;
     }
