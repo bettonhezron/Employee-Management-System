@@ -25,7 +25,7 @@ public class DashboardController {
         List<Employee> recentHires = employeeService.getRecentHires(3);
         model.addAttribute("recentHires", recentHires);
 
-        // Add any additional data as needed for your dashboard
-        return "dashboard"; // Corresponds to dashboard.html template
+        // Additional dashboard data can be added here as needed
+        return "dashboard";
     }
 }

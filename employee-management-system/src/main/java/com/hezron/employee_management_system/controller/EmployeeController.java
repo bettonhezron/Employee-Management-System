@@ -16,8 +16,8 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    @GetMapping("/")
-    public String viewHomePage(Model model) {
+    @GetMapping("/employees")
+    public String listEmployees(Model model) {
         return findPaginated(1, "firstName", "asc", model);
     }
 
@@ -87,6 +87,6 @@ public class EmployeeController {
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         model.addAttribute("listEmployees", listEmployees);
 
-        return "index";
+        return "employee";
     }
 }
