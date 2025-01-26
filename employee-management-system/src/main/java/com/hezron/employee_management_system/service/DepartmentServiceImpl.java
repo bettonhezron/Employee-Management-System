@@ -1,8 +1,8 @@
 package com.hezron.employee_management_system.service;
 
-
 import com.hezron.employee_management_system.model.Department;
 import com.hezron.employee_management_system.repository.DepartmentRepository;
+import com.hezron.employee_management_system.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,22 +21,17 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Department createDepartment(Department department) {
-        if (departmentRepository.existsByName(department.getName())) {
-            throw new IllegalArgumentException("Department name already exists.");
-        }
-        return departmentRepository.save(department);
+    public void saveDepartment(Department department) {
+        departmentRepository.save(department);
     }
 
     @Override
-    public Department updateDepartment(Long id, Department updatedDepartment) {
-        Optional<Department> existingDepartment = departmentRepository.findById(id);
-        if (existingDepartment.isPresent()) {
-            Department department = existingDepartment.get();
-            department.setName(updatedDepartment.getName());
-            return departmentRepository.save(department);
+    public Department getDepartmentById(Long id) {
+        Optional<Department> optional = departmentRepository.findById(id);
+        if (optional.isPresent()) {
+            return optional.get();
         } else {
-            throw new IllegalArgumentException("Department not found.");
+            throw new RuntimeException("Department not found for id: " + id);
         }
     }
 
