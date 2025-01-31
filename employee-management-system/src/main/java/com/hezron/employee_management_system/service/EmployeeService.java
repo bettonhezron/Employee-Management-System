@@ -20,6 +20,7 @@ public interface EmployeeService {
     // Get recent hires (limit by number of employees)
     List<Employee> getRecentHires(int limit);
 
+
     List<Employee> getAllEmployees();
     void saveEmployee(Employee employee);
     Employee getEmployeeById(Long id);

@@ -103,6 +103,7 @@
                 <th><a th:href="@{/page/1(sortField='lastName',sortDir=${reverseSortDir})}" class="text-white">Last Name</a></th>
                 <th><a th:href="@{/page/1(sortField='email',sortDir=${reverseSortDir})}" class="text-white">Email</a></th>
                 <th><a th:href="@{/page/1(sortField='hireDate',sortDir=${reverseSortDir})}" class="text-white">Hire Date</a></th>
+                <th><a th:href="@{/page/1(sortField='salary',sortDir=${reverseSortDir})}" class="text-white">Salary</a></th>
                 <th class="text-center">Actions</th>
             </tr>
             </thead>
@@ -112,6 +113,7 @@
                 <td th:text="${employee.lastName}"></td>
                 <td th:text="${employee.email}"></td>
                 <td th:text="${#temporals.format(employee.hireDate, 'yyyy-MM-dd')}"></td>
+                <td th:text="${#numbers.formatDecimal(employee.salary, 1, 2)}"></td>
                 <td class="text-center">
                     <a class="btn btn-warning btn-sm" th:href="@{/showFormForUpdate/{id}(id=${employee.id})}">
                         <i class="fas fa-edit"></i> Edit
