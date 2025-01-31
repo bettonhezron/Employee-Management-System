@@ -33,6 +33,11 @@ public class Employee {
     @Column(name = "hire_date", nullable = false)
     private LocalDate hireDate;
 
+
+    @Column(nullable = false)
+    private Double salary;
+
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -64,6 +69,14 @@ public class Employee {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(Double salary) {
+        this.salary = salary;
     }
 
     public Department getDepartment() {
