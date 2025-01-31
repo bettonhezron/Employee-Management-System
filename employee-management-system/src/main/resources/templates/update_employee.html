@@ -95,8 +95,29 @@
             </div>
 
             <div class="mb-3">
-                <label for="hireDate" class="form-label">Hire Date</label>
-                <input type="date" class="form-control" id="hireDate" th:field="*{hireDate}" required>
+                <label class="form-label">Hire Date</label>
+                <input type="date"
+                       class="form-control"
+                       name="hireDate"
+                       th:value="${formattedHireDate}"
+                       required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Salary</label>
+                <input type="number" step="0.01" class="form-control" th:field="*{salary}" placeholder="Enter Salary" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Department</label>
+                <select class="form-control" th:field="*{department}" required>
+                    <option value="">Select Department</option>
+                    <option th:each="dept : ${departments}"
+                            th:value="${dept.id}"
+                            th:text="${dept.name}"
+                            th:selected="${dept.id == employee.department.id}">
+                    </option>
+                </select>
             </div>
 
             <!-- Buttons -->

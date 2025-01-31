@@ -74,8 +74,17 @@ public class EmployeeController {
                                     RedirectAttributes redirectAttributes) {
         try {
             Employee employee = employeeService.getEmployeeById(id);
+
+
+            logger.info("Hire Date from DB: " + employee.getHireDate());
+
             model.addAttribute("employee", employee);
             model.addAttribute("departments", departmentService.getAllDepartments());
+
+            // Add formatted date as a separate model attribute
+            model.addAttribute("formattedHireDate",
+                    employee.getHireDate().toString());
+
             return "update_employee";
         } catch (Exception e) {
             logger.error("Error fetching employee for update: ", e);
@@ -89,6 +98,9 @@ public class EmployeeController {
     public String updateEmployee(@ModelAttribute("employee") Employee employee,
                                  RedirectAttributes redirectAttributes) {
         try {
+            // Debug log
+            logger.info("Received hire date: " + employee.getHireDate());
+
             employeeService.updateEmployee(employee);
             redirectAttributes.addFlashAttribute("successMessage", "Employee updated successfully!");
             return "redirect:/employees";
