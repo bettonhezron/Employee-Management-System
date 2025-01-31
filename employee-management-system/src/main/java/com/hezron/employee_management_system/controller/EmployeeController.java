@@ -3,6 +3,8 @@ package com.hezron.employee_management_system.controller;
 import com.hezron.employee_management_system.model.Employee;
 import com.hezron.employee_management_system.service.DepartmentService;
 import com.hezron.employee_management_system.service.EmployeeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -10,10 +12,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.List;
-
 @Controller
 public class EmployeeController {
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
+
     @Autowired
     private EmployeeService employeeService;
 
@@ -27,10 +31,17 @@ public class EmployeeController {
 
     @GetMapping("/showNewEmployeeForm")
     public String showNewEmployeeForm(Model model) {
-        Employee employee = new Employee();
-        model.addAttribute("employee", employee);
-        model.addAttribute("departments", departmentService.getAllDepartments());
-        return "new_employee";
+        try {
+            Employee employee = new Employee();
+            employee.setHireDate(LocalDate.now());
+            model.addAttribute("employee", employee);
+            model.addAttribute("departments", departmentService.getAllDepartments());
+            return "new_employee";
+        } catch (Exception e) {
+            logger.error("Error preparing new employee form: ", e);
+            model.addAttribute("errorMessage", "Error loading form: " + e.getMessage());
+            return "redirect:/employees";
+        }
     }
 
     @PostMapping("/saveEmployee")
@@ -38,67 +49,94 @@ public class EmployeeController {
                                RedirectAttributes redirectAttributes,
                                Model model) {
         try {
-            // Add some basic validation
-            if (employee.getFirstName() == null || employee.getFirstName().isEmpty()) {
+            // Basic validation
+            if (employee.getFirstName() == null || employee.getFirstName().trim().isEmpty()) {
                 model.addAttribute("errorMessage", "First name cannot be empty");
+                model.addAttribute("departments", departmentService.getAllDepartments());
                 return "new_employee";
             }
 
             employeeService.saveEmployee(employee);
-            redirectAttributes.addFlashAttribute("successMessage", "Employee created successfully!");
-            return "redirect:/";
-        } catch (Exception e) {
-            // Log the full stack trace
-            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("successMessage", "Employee saved successfully!");
+            return "redirect:/employees";
 
-            // Add error message to model
+        } catch (Exception e) {
+            logger.error("Error saving employee: ", e);
             model.addAttribute("errorMessage", "Error saving employee: " + e.getMessage());
+            model.addAttribute("departments", departmentService.getAllDepartments());
             return "new_employee";
         }
     }
 
     @GetMapping("/showFormForUpdate/{id}")
-    public String showUpdateForm(@PathVariable Long id, Model model) {
-        Employee employee = employeeService.getEmployeeById(id);
-        model.addAttribute("employee", employee);
-        return "update_employee";
+    public String showFormForUpdate(@PathVariable Long id,
+                                    Model model,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            Employee employee = employeeService.getEmployeeById(id);
+            model.addAttribute("employee", employee);
+            model.addAttribute("departments", departmentService.getAllDepartments());
+            return "update_employee";
+        } catch (Exception e) {
+            logger.error("Error fetching employee for update: ", e);
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Error fetching employee details: " + e.getMessage());
+            return "redirect:/employees";
+        }
     }
 
     @PostMapping("/updateEmployee")
     public String updateEmployee(@ModelAttribute("employee") Employee employee,
                                  RedirectAttributes redirectAttributes) {
-        employeeService.updateEmployee(employee);
-        redirectAttributes.addFlashAttribute("message", "Employee updated successfully!");
-        return "redirect:/";
+        try {
+            employeeService.updateEmployee(employee);
+            redirectAttributes.addFlashAttribute("successMessage", "Employee updated successfully!");
+            return "redirect:/employees";
+        } catch (Exception e) {
+            logger.error("Error updating employee: ", e);
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Error updating employee: " + e.getMessage());
+            return "redirect:/employees";
+        }
     }
 
     @GetMapping("/deleteEmployee/{id}")
-    public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        employeeService.deleteEmployeeById(id);
-        redirectAttributes.addFlashAttribute("message", "Employee deleted successfully!");
+    public String deleteEmployee(@PathVariable Long id,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            employeeService.deleteEmployeeById(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Employee deleted successfully!");
+        } catch (Exception e) {
+            logger.error("Error deleting employee: ", e);
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Error deleting employee: " + e.getMessage());
+        }
         return "redirect:/employees";
     }
 
-
     @GetMapping("/page/{pageNo}")
-    public String findPaginated(
-            @PathVariable(value = "pageNo") int pageNo,
-            @RequestParam(value = "sortField", defaultValue = "firstName") String sortField,
-            @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
-            Model model
-    ) {
-        int pageSize = 5;
-        Page<Employee> page = employeeService.findPaginated(pageNo, pageSize, sortField, sortDir);
-        List<Employee> listEmployees = page.getContent();
+    public String findPaginated(@PathVariable(value = "pageNo") int pageNo,
+                                @RequestParam(value = "sortField", defaultValue = "firstName") String sortField,
+                                @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
+                                Model model) {
+        try {
+            int pageSize = 5;
+            Page<Employee> page = employeeService.findPaginated(pageNo, pageSize, sortField, sortDir);
+            List<Employee> listEmployees = page.getContent();
 
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-        model.addAttribute("listEmployees", listEmployees);
+            model.addAttribute("currentPage", pageNo);
+            model.addAttribute("totalPages", page.getTotalPages());
+            model.addAttribute("totalItems", page.getTotalElements());
+            model.addAttribute("sortField", sortField);
+            model.addAttribute("sortDir", sortDir);
+            model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+            model.addAttribute("listEmployees", listEmployees);
 
-        return "employees";
+            return "employees";
+        } catch (Exception e) {
+            logger.error("Error in pagination: ", e);
+            model.addAttribute("errorMessage", "Error loading employees: " + e.getMessage());
+            return "employees";
+        }
     }
 }
