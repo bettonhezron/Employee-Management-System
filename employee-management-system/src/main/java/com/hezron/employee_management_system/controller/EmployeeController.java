@@ -1,6 +1,7 @@
 package com.hezron.employee_management_system.controller;
 
 import com.hezron.employee_management_system.model.Employee;
+import com.hezron.employee_management_system.service.DepartmentService;
 import com.hezron.employee_management_system.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,9 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+    @Autowired
+    private DepartmentService departmentService;
+
     @GetMapping("/employees")
     public String listEmployees(Model model) {
         return findPaginated(1, "firstName", "asc", model);
@@ -25,6 +29,7 @@ public class EmployeeController {
     public String showNewEmployeeForm(Model model) {
         Employee employee = new Employee();
         model.addAttribute("employee", employee);
+        model.addAttribute("departments", departmentService.getAllDepartments());
         return "new_employee";
     }
 
@@ -67,6 +72,13 @@ public class EmployeeController {
         return "redirect:/";
     }
 
+    @GetMapping("/deleteEmployee/{id}")
+    public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        employeeService.deleteEmployeeById(id);
+        redirectAttributes.addFlashAttribute("message", "Employee deleted successfully!");
+        return "redirect:/employees";
+    }
+
 
     @GetMapping("/page/{pageNo}")
     public String findPaginated(
@@ -87,6 +99,6 @@ public class EmployeeController {
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         model.addAttribute("listEmployees", listEmployees);
 
-        return "employee";
+        return "employees";
     }
 }

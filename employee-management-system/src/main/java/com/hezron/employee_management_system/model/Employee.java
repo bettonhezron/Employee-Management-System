@@ -26,13 +26,12 @@ public class Employee {
     private String email;
 
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "department_id", nullable = false)
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
 
     @Column(name = "hire_date", nullable = false)
     private LocalDate hireDate;
-
 
     // Getters and Setters
     public Long getId() {
@@ -67,17 +66,17 @@ public class Employee {
         this.email = email;
     }
 
-//    public Department getDepartment() {
-//        return department;
-//    }
+    public Department getDepartment() {
+        return department;
+    }
 
-//    public void setDepartment(Department department) {
-//        this.department = department;
-//    }
-//
-//    public LocalDate getHireDate() {
-//        return hireDate;
-//    }
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public LocalDate getHireDate() {
+        return hireDate;
+    }
 
     public void setHireDate(LocalDate hireDate) {
         this.hireDate = hireDate;
