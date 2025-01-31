@@ -1,17 +1,16 @@
 package com.hezron.employee_management_system.service;
 
+import com.hezron.employee_management_system.excepions.ResourceNotFoundException;
 import com.hezron.employee_management_system.model.Department;
 import com.hezron.employee_management_system.repository.DepartmentRepository;
-import com.hezron.employee_management_system.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
-
     @Autowired
     private DepartmentRepository departmentRepository;
 
@@ -21,18 +20,14 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public void saveDepartment(Department department) {
-        departmentRepository.save(department);
+    public Department saveDepartment(Department department) {
+        return departmentRepository.save(department);
     }
 
     @Override
     public Department getDepartmentById(Long id) {
-        Optional<Department> optional = departmentRepository.findById(id);
-        if (optional.isPresent()) {
-            return optional.get();
-        } else {
-            throw new RuntimeException("Department not found for id: " + id);
-        }
+        return departmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
     }
 
     @Override

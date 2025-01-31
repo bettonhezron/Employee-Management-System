@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface DepartmentService {
     List<Department> getAllDepartments();
-    void saveDepartment(Department department);
+    Department saveDepartment(Department department);
     Department getDepartmentById(Long id);
     void deleteDepartment(Long id);
 }
