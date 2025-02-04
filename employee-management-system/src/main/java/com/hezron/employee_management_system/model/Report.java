@@ -21,35 +21,29 @@ public class Report {
     @Column
     private LocalDate endDate;
 
-    private String department;
-
     @Column
     private boolean newHiresOnly;
 
     @Column
-    private boolean topPerfomerOnly;
+    private boolean topPerformerOnly;
 
     @Column
     private String reportData;
 
    // Constructors
-    public Report(Long id, String reportType, LocalDate startDate, LocalDate endDate, boolean newHiresOnly, boolean topPerfomerOnly, String reportData) {
+    public Report(Long id, String reportType, LocalDate startDate, LocalDate endDate, boolean newHiresOnly, boolean topPerformerOnly, String reportData) {
         this.id = id;
         this.reportType = reportType;
         this.startDate = startDate;
         this.endDate = endDate;
         this.newHiresOnly = newHiresOnly;
-        this.topPerfomerOnly = topPerfomerOnly;
+        this.topPerformerOnly = topPerformerOnly;
         this.reportData = reportData;
     }
 
     //Getters and Setters
     public String getReportType() {
         return reportType;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
     }
 
     public void setReportType(String reportType) {
@@ -80,12 +74,12 @@ public class Report {
         this.newHiresOnly = newHiresOnly;
     }
 
-    public boolean isTopPerfomerOnly() {
-        return topPerfomerOnly;
+    public boolean isTopPerformerOnly() {
+        return topPerformerOnly;
     }
 
-    public void setTopPerfomerOnly(boolean topPerfomerOnly) {
-        this.topPerfomerOnly = topPerfomerOnly;
+    public void setTopPerformerOnly(boolean topPerformerOnly) {
+        this.topPerformerOnly = topPerformerOnly;
     }
 
     public String getReportData() {
@@ -102,9 +96,5 @@ public class Report {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getDepartment() {
-        return department;
     }
 }

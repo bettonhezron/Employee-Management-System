@@ -1,94 +1,77 @@
 package com.hezron.employee_management_system.service;
 
 
+import com.hezron.employee_management_system.dto.HeadcountReport;
 import com.hezron.employee_management_system.model.Department;
 import com.hezron.employee_management_system.model.Employee;
+
 import com.hezron.employee_management_system.model.Report;
+import com.hezron.employee_management_system.repository.DepartmentRepository;
 import com.hezron.employee_management_system.repository.EmployeeRepository;
 import com.hezron.employee_management_system.repository.ReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.DoubleSummaryStatistics;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class ReportServiceImpl implements ReportService{
 
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
 
     private final ReportRepository reportRepository;
 
-
-
-    public ReportServiceImpl(EmployeeRepository employeeRepository, ReportRepository reportRepository) {
+    public ReportServiceImpl(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository, ReportRepository reportRepository) {
         this.employeeRepository = employeeRepository;
+        this.departmentRepository = departmentRepository;
         this.reportRepository = reportRepository;
     }
 
+    public HeadcountReport generateHeadcountReport() {
+        HeadcountReport report = new HeadcountReport();
 
-    @Override
-    public Map<String, Object> generatedHeadCountReport() {
-        Map<String, Object> report = new HashMap<>();
+        // Get all departments and employees
+        List<Department> departments = departmentRepository.findAll();
         List<Employee> employees = employeeRepository.findAll();
 
-        // Group by department
-        Map<Department, Long> departmentCounts = employees.stream()
-                .collect(Collectors.groupingBy(Employee::getDepartment, Collectors.counting()));
+        // Calculate department counts
+        Map<String, Integer> departmentCounts = new LinkedHashMap<>();
+        for (Department dept : departments) {
+            int count = (int) employees.stream()
+                    .filter(e -> e.getDepartment().getId().equals(dept.getId()))
+                    .count();
+            departmentCounts.put(dept.getName(), count);
+        }
 
-        report.put("departmentCounts", departmentCounts);
-        report.put("totalEmployees", employees.size());
+        // Set the report data
+        report.setDepartmentCounts(departmentCounts);
+        report.setTotalEmployees(employees.size());
+
+        // Find largest department
+        String largest = departmentCounts.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse("N/A");
+        report.setLargestDepartment(largest);
+
+        // Find smallest department
+        String smallest = departmentCounts.entrySet().stream()
+                .min(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse("N/A");
+        report.setSmallestDepartment(smallest);
+
+        // Find newest department (assuming department ID is auto-incremented)
+        Department newest = departments.stream()
+                .max(Comparator.comparing(Department::getId))
+                .orElse(null);
+        report.setNewestDepartment(newest != null ? newest.getName() : "N/A");
 
         return report;
     }
 
-    @Override
-    public Map<String, Object> generateSalaryReport() {
-        Map<String, Object> report = new HashMap<>();
-        List<Employee> employees = employeeRepository.findAll();
 
-        // Calculate salary statistics per department
-        Map<Department, DoubleSummaryStatistics> salaryStats = employees.stream()
-                .collect(Collectors.groupingBy(Employee::getDepartment,
-                        Collectors.summarizingDouble(Employee::getSalary)));
-
-        report.put("salaryStatistics", salaryStats);
-        return report;
-    }
-
-    @Override
-    public Map<String, Object> generatePerfomanceReport() {
-        return new HashMap<>();
-    }
-
-    @Override
-    public Report generateCustomReport(Report reportRequest) {
-        List<Employee> employees = employeeRepository.findAll();
-
-        // Apply filters
-        if (reportRequest.getDepartment() != null) {
-            employees = employees.stream()
-                    .filter(e -> e.getDepartment().getName().equals(reportRequest.getDepartment()))
-                    .collect(Collectors.toList());
-        }
-
-        if (reportRequest.isNewHiresOnly()) {
-            employees = employees.stream()
-                    .filter(e -> e.getHireDate().isAfter(reportRequest.getStartDate()))
-                    .collect(Collectors.toList());
-        }
-
-        // Store results
-        reportRequest.setReportData(generateReportData(employees, reportRequest.getReportType()));
-        return reportRepository.save(reportRequest);
-    }
-
-    private String generateReportData(List<Employee> employees, String reportType) {
-        // Implement report generation logic based on type
-        return "reports";
-    }
 
 }
